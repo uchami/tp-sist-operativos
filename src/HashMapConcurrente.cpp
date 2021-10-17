@@ -2,7 +2,7 @@
 #define CHM_CPP
 
 #include <thread>
-// alternativamente #include <pthread.h>
+#include <pthread.h>
 #include <iostream>
 #include <fstream>
 
@@ -64,11 +64,22 @@ unsigned int HashMapConcurrente::valor(std::string clave) {
     }
     return 0;
 }
+void HashMapConcurrente::apagarDisponibilidad() {
+    for(int i=0; i < HashMapConcurrente::cantLetras; i++) {
+        disponibilidad_por_letra[i].lock();
+    }
+}
+
+void HashMapConcurrente::prenderDisponibilidad(){
+    for(int i=0; i < HashMapConcurrente::cantLetras; i++) {
+        disponibilidad_por_letra[i].unlock();
+    }
+}
 
 hashMapPair HashMapConcurrente::maximo() {
     hashMapPair *max = new hashMapPair();
     max->second = 0;
-
+    apagarDisponibilidad();
     for (unsigned int index = 0; index < HashMapConcurrente::cantLetras; index++) {
         for (auto &p : *tabla[index]) {
             if (p.second > max->second) {
@@ -77,14 +88,47 @@ hashMapPair HashMapConcurrente::maximo() {
             }
         }
     }
-
+    // No es ABSOLUTAMENTE consistente. Nos imaginabamos un thread que espere y luego disponibilice. Pero suena como mucho.
+    prenderDisponibilidad();
     return *max;
 }
 
 
 
+
+
+
 hashMapPair HashMapConcurrente::maximoParalelo(unsigned int cant_threads) {
-    // Completar (Ejercicio 3)
+    max = new hashMapPair();
+    indexLetraSinCalcular = 0;
+    pthread_t threadIds[cant_threads];
+
+    max->second = 0;
+    for (unsigned int index = 0; index < cant_threads; index++) {
+        // lanzo los threads
+        pthread_create(&(threadIds[index]), NULL, &codigoThreadMaximo, NULL);
+    }
+    for (unsigned int index = 0; index < cant_threads; index++) {
+        pthread_join(&(threadIds[index]), NULL);
+    }
+    return *max;
+}
+
+void * HashMapConcurrente::codigoThreadMaximo(void * arg) {
+    int index = indexLetraSinCalcular.getAndInc();
+    while(index < HashMapConcurrente::cantLetras) {
+        disponibilidad_por_letra[index].lock();
+        for (auto &p : *tabla[index]) {
+            if (p.second > max->second) {
+                afectarMaximo.lock();
+                max->first = p.first;
+                max->second = p.second;
+                afectarMaximo.unlock();
+            }
+        }
+        disponibilidad_por_letra[index].unlock();
+    }
+    return NULL;
 }
 
 #endif

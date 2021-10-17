@@ -41,28 +41,26 @@ class ListaAtomica {
     // Podriiiamos experimentar pero no es necesario
     // Irse a dormir y despertarse no es gratis, habria que medirlo.
     
-    void insertar2(const T &valor) {
+    void insertar(const T &valor) {
         // Completar (Ejercicio 1)
         Nodo* newNode = new Nodo(valor);
         newNode->_siguiente = _cabeza;
         
-         while(true) {
-            /* compare_exchange_weak hace esto:
+        /* compare_exchange_weak hace esto:
             
-            comparacion = (_cabeza.load() == newNode._siguiente);
-            if (comparacion) {
-                _cabeza = newNode; // soy la nueva cabeza
-            } else {
-                newNode._siguiente = _cabeza;
-            }
-            return comparacion;
-            */
-            if (_cabeza.compare_exchange_weak(newNode->_siguiente, newNode)) break;
+        comparacion = (_cabeza.load() == newNode._siguiente);
+        if (comparacion) {
+            _cabeza = newNode; // soy la nueva cabeza
+        } else {
+            newNode._siguiente = _cabeza;
         }
+        return comparacion;
+        */
+        while(_cabeza.compare_exchange_weak(newNode->_siguiente, newNode));
         return;
     }
 
-    void insertar(const T &valor) {
+    void insertarConMutex(const T &valor) {
         Nodo* newNode = new Nodo(valor);
         permiso_para_insertar.lock();
         newNode->_siguiente = _cabeza;
