@@ -187,42 +187,42 @@ LT_END_TEST(ClavesEsCorrectoTrasVariasInsercionesDistintoBucket)
 //     LT_CHECK_EQ(actual.second, 4);
 // LT_END_TEST(MaximoParaleloEsCorrectoDosThreads)
 
-// // Tests Ejercicio 4
+// Tests Ejercicio 4
 
-// LT_BEGIN_SUITE(TestsEjercicio4)
+LT_BEGIN_SUITE(TestsEjercicio4)
 
-// HashMapConcurrente hM;
+HashMapConcurrente hM;
 
-// void set_up()
-// {
-// }
+void set_up()
+{
+}
 
-// void tear_down()
-// {
-// }
-// LT_END_SUITE(TestsEjercicio4)
+void tear_down()
+{
+}
+LT_END_SUITE(TestsEjercicio4)
 
-// LT_BEGIN_TEST(TestsEjercicio4, CargarArchivoFunciona)
-//     cargarArchivo(hM, "data/test-1");
-//     LT_CHECK_EQ(hM.valor("tiranosaurio"), 1);
-//     LT_CHECK_EQ(hM.claves().size(), 5);
-// LT_END_TEST(CargarArchivoFunciona)
+LT_BEGIN_TEST(TestsEjercicio4, CargarArchivoFunciona)
+    cargarArchivo(hM, "data/test-1");
+    LT_CHECK_EQ(hM.valor("tiranosaurio"), 1);
+    LT_CHECK_EQ(hM.claves().size(), 5);
+LT_END_TEST(CargarArchivoFunciona)
 
-// LT_BEGIN_TEST(TestsEjercicio4, CargarMultiplesArchivosFuncionaUnThread)
-//     cargarMultiplesArchivos(hM, 1, {"data/test-1", "data/test-2", "data/test-3"});
-//     LT_CHECK_EQ(hM.valor("tiranosaurio"), 2);
-//     LT_CHECK_EQ(hM.valor("linux"), 3);
-//     LT_CHECK_EQ(hM.valor("estegosaurio"), 4);
-//     LT_CHECK_EQ(hM.claves().size(), 12);
-// LT_END_TEST(CargarMultiplesArchivosFuncionaUnThread)
+LT_BEGIN_TEST(TestsEjercicio4, CargarMultiplesArchivosFuncionaUnThread)
+    cargarMultiplesArchivos(hM, 1, {"data/test-1", "data/test-2", "data/test-3"});
+    LT_CHECK_EQ(hM.valor("tiranosaurio"), 2);
+    LT_CHECK_EQ(hM.valor("linux"), 3);
+    LT_CHECK_EQ(hM.valor("estegosaurio"), 4);
+    LT_CHECK_EQ(hM.claves().size(), 12);
+LT_END_TEST(CargarMultiplesArchivosFuncionaUnThread)
 
-// LT_BEGIN_TEST(TestsEjercicio4, CargarMultiplesArchivosFuncionaDosThreads)
-//     cargarMultiplesArchivos(hM, 1, {"data/test-1", "data/test-2", "data/test-3"});
-//     LT_CHECK_EQ(hM.valor("tiranosaurio"), 2);
-//     LT_CHECK_EQ(hM.valor("linux"), 3);
-//     LT_CHECK_EQ(hM.valor("estegosaurio"), 4);
-//     LT_CHECK_EQ(hM.claves().size(), 12);
-// LT_END_TEST(CargarMultiplesArchivosFuncionaDosThreads)
+LT_BEGIN_TEST(TestsEjercicio4, CargarMultiplesArchivosFuncionaDosThreads)
+    cargarMultiplesArchivos(hM, 1, {"data/test-1", "data/test-2", "data/test-3"});
+    LT_CHECK_EQ(hM.valor("tiranosaurio"), 2);
+    LT_CHECK_EQ(hM.valor("linux"), 3);
+    LT_CHECK_EQ(hM.valor("estegosaurio"), 4);
+    LT_CHECK_EQ(hM.claves().size(), 12);
+LT_END_TEST(CargarMultiplesArchivosFuncionaDosThreads)
 
 // Ejecutar tests
 LT_BEGIN_AUTO_TEST_ENV()

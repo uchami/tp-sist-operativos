@@ -37,7 +37,7 @@ void HashMapConcurrente::incrementar(std::string clave) {
 
     // posible leakeo de memoria. Cuando hacemos free del pair?
     // se puede hacer, pero no nos matemos con este tema, no se suele evaluar que leakee.
-    hashMapPair* nuevaEntrada = new hashMapPair(clave, 1);
+    hashMapPair nuevaEntrada = hashMapPair(clave, 1);
     ListaAtomica<hashMapPair>* a = tabla[clave_hash];
     a->insertar(nuevaEntrada);
     disponibilidad_por_letra[clave_hash].unlock();
