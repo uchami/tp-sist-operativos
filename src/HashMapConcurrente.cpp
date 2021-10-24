@@ -37,7 +37,7 @@ void HashMapConcurrente::incrementar(std::string clave) {
 
     // posible leakeo de memoria. Cuando hacemos free del pair?
     // se puede hacer, pero no nos matemos con este tema, no se suele evaluar que leakee.
-    hashMapPair* nuevaEntrada = new hashMapPair(clave, 1);
+    hashMapPair nuevaEntrada = hashMapPair(clave, 1);
     ListaAtomica<hashMapPair>* a = tabla[clave_hash];
     a->insertar(nuevaEntrada);
     disponibilidad_por_letra[clave_hash].unlock();
@@ -93,42 +93,40 @@ hashMapPair HashMapConcurrente::maximo() {
     return *max;
 }
 
-
-
-
-
-
 hashMapPair HashMapConcurrente::maximoParalelo(unsigned int cant_threads) {
-    max = new hashMapPair();
-    indexLetraSinCalcular = 0;
-    pthread_t threadIds[cant_threads];
-
+    //Variables comparti
+    hashMapPair *max = new hashMapPair();
+    std::atomic<int> indexLetraSinCalcular(0);
+    std::thread threads[cant_threads];
+    std::mutex afectarMaximo;
     max->second = 0;
     for (unsigned int index = 0; index < cant_threads; index++) {
+
         // lanzo los threads
-        pthread_create(&(threadIds[index]), NULL, &codigoThreadMaximo, NULL);
+        threads[index] = std::thread(&HashMapConcurrente::codigoThreadMaximo, this, &indexLetraSinCalcular, max, &afectarMaximo); 
     }
     for (unsigned int index = 0; index < cant_threads; index++) {
-        pthread_join(&(threadIds[index]), NULL);
+        threads[index].join();
     }
     return *max;
 }
 
-void * HashMapConcurrente::codigoThreadMaximo(void * arg) {
-    int index = indexLetraSinCalcular.getAndInc();
-    while(index < HashMapConcurrente::cantLetras) {
+void HashMapConcurrente::codigoThreadMaximo(std::atomic<int>* indexLetraSinCalcular, hashMapPair *max, std::mutex *afectarMaximo) {
+    int index = (*indexLetraSinCalcular).fetch_add(1);
+    while(index < cantLetras) {
         disponibilidad_por_letra[index].lock();
         for (auto &p : *tabla[index]) {
             if (p.second > max->second) {
-                afectarMaximo.lock();
+                (*afectarMaximo).lock();
                 max->first = p.first;
                 max->second = p.second;
-                afectarMaximo.unlock();
+                (*afectarMaximo).unlock();
             }
         }
         disponibilidad_por_letra[index].unlock();
+
+        index = (*indexLetraSinCalcular).fetch_add(1);
     }
-    return NULL;
 }
 
 #endif

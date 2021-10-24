@@ -135,57 +135,58 @@ LT_END_TEST(ClavesEsCorrectoTrasVariasInsercionesDistintoBucket)
 
 // // Tests Ejercicio 3
 
-// LT_BEGIN_SUITE(TestsEjercicio3)
+LT_BEGIN_SUITE(TestsEjercicio3)
 
-// HashMapConcurrente hM;
+HashMapConcurrente hM;
 
-// void set_up()
-// {
-// }
+void set_up()
+{
+}
 
-// void tear_down()
-// {
-// }
-// LT_END_SUITE(TestsEjercicio3)
+void tear_down()
+{
+}
+LT_END_SUITE(TestsEjercicio3)
 
-// LT_BEGIN_TEST(TestsEjercicio3, MaximoEsCorrecto)
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("estegosaurio");
-//     hM.incrementar("estegosaurio");
+LT_BEGIN_TEST(TestsEjercicio3, MaximoEsCorrecto)
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("estegosaurio");
+    hM.incrementar("estegosaurio");
 
-//     hashMapPair actual = hM.maximo();
-//     LT_CHECK_EQ(actual.first, "tiranosaurio");
-//     LT_CHECK_EQ(actual.second, 4);
-// LT_END_TEST(MaximoEsCorrecto)
+    hashMapPair actual = hM.maximo();
+    LT_CHECK_EQ(actual.first, "tiranosaurio");
+    LT_CHECK_EQ(actual.second, 4);
+LT_END_TEST(MaximoEsCorrecto)
 
-// LT_BEGIN_TEST(TestsEjercicio3, MaximoParaleloEsCorrectoUnThread)
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("estegosaurio");
-//     hM.incrementar("estegosaurio");
+LT_BEGIN_TEST(TestsEjercicio3, MaximoParaleloEsCorrectoUnThread)
+    printf("No incremente");
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("estegosaurio");
+    hM.incrementar("estegosaurio");
+    printf("Incremente");
+    hashMapPair actual = hM.maximoParalelo(1);
+    LT_CHECK_EQ(actual.first, "tiranosaurio");
+    LT_CHECK_EQ(actual.second, 4);
+LT_END_TEST(MaximoParaleloEsCorrectoUnThread)
 
-//     hashMapPair actual = hM.maximoParalelo(1);
-//     LT_CHECK_EQ(actual.first, "tiranosaurio");
-//     LT_CHECK_EQ(actual.second, 4);
-// LT_END_TEST(MaximoParaleloEsCorrectoUnThread)
+LT_BEGIN_TEST(TestsEjercicio3, MaximoParaleloEsCorrectoDosThreads)
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("tiranosaurio");
+    hM.incrementar("estegosaurio");
+    hM.incrementar("estegosaurio");
 
-// LT_BEGIN_TEST(TestsEjercicio3, MaximoParaleloEsCorrectoDosThreads)
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("tiranosaurio");
-//     hM.incrementar("estegosaurio");
-//     hM.incrementar("estegosaurio");
-
-//     hashMapPair actual = hM.maximoParalelo(2);
-//     LT_CHECK_EQ(actual.first, "tiranosaurio");
-//     LT_CHECK_EQ(actual.second, 4);
-// LT_END_TEST(MaximoParaleloEsCorrectoDosThreads)
+    hashMapPair actual = hM.maximoParalelo(2);
+    LT_CHECK_EQ(actual.first, "tiranosaurio");
+    LT_CHECK_EQ(actual.second, 4);
+LT_END_TEST(MaximoParaleloEsCorrectoDosThreads)
 
 // // Tests Ejercicio 4
 

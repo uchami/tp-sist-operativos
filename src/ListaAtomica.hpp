@@ -56,7 +56,7 @@ class ListaAtomica {
         }
         return comparacion;
         */
-        while(_cabeza.compare_exchange_weak(newNode->_siguiente, newNode));
+        while(!(_cabeza.compare_exchange_weak(newNode->_siguiente, newNode)));
         return;
     }
 

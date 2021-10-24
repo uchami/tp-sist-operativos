@@ -14,11 +14,6 @@ typedef std::pair<std::string, unsigned int> hashMapPair;
 class HashMapConcurrente {
  public:
     static constexpr int cantLetras = 26;
-    //Variables compartidas
-    // No esta muy bueno que sean publicas, no? Porque no podemos paralelizar el trabajo de calculo de 'varios maximos al mismo tiempo'.
-    std::atomic<int>* indexLetraSinCalcular;
-    std::mutex afectarMaximo;
-    hashMapPair *max;
 
     HashMapConcurrente();
 
@@ -33,7 +28,7 @@ class HashMapConcurrente {
    std::mutex disponibilidad_por_letra[HashMapConcurrente::cantLetras];
    void apagarDisponibilidad();
    void prenderDisponibilidad();
-   void* codigoThreadMaximo();
+   void codigoThreadMaximo(std::atomic<int>* indexLetraSinCalcular, hashMapPair *max, std::mutex *afectarMaximo);
 
  private:
     ListaAtomica<hashMapPair> *tabla[HashMapConcurrente::cantLetras];
