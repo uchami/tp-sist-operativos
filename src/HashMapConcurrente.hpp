@@ -26,7 +26,9 @@ class HashMapConcurrente {
 
    //un mutex por cada 
    std::mutex disponibilidad_por_letra[HashMapConcurrente::cantLetras];
-
+   void apagarDisponibilidad();
+   void prenderDisponibilidad();
+   void codigoThreadMaximo(std::atomic<int>* indexLetraSinCalcular, hashMapPair *max, std::mutex *afectarMaximo);
 
  private:
     ListaAtomica<hashMapPair> *tabla[HashMapConcurrente::cantLetras];
