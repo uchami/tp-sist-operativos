@@ -2,7 +2,6 @@
 #define CHM_CPP
 
 #include <thread>
-#include <pthread.h>
 #include <iostream>
 #include <fstream>
 
@@ -101,7 +100,6 @@ hashMapPair HashMapConcurrente::maximoParalelo(unsigned int cant_threads) {
     std::mutex afectarMaximo;
     max->second = 0;
     for (unsigned int index = 0; index < cant_threads; index++) {
-
         // lanzo los threads
         threads[index] = std::thread(&HashMapConcurrente::codigoThreadMaximo, this, &indexLetraSinCalcular, max, &afectarMaximo); 
     }
@@ -116,10 +114,14 @@ void HashMapConcurrente::codigoThreadMaximo(std::atomic<int>* indexLetraSinCalcu
     while(index < cantLetras) {
         disponibilidad_por_letra[index].lock();
         for (auto &p : *tabla[index]) {
+            // mejora de eficiencia para no tomar el lock innecesariamente
             if (p.second > max->second) {
                 (*afectarMaximo).lock();
-                max->first = p.first;
-                max->second = p.second;
+                // la verdadera comparacion atomica de maximo vs p.
+                if (p.second > max->second) {
+                    max->first = p.first;
+                    max->second = p.second;
+                }
                 (*afectarMaximo).unlock();
             }
         }

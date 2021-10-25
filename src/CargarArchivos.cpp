@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <pthread.h>
+#include <thread>
 
 #include "CargarArchivos.hpp"
 
@@ -36,18 +36,11 @@ int cargarArchivo(
     return cant;
 }
 
-struct parametrosThread{
-    std::atomic<int>* ultimoFileLeido;
-    std::vector<std::string> &filePaths;
-    HashMapConcurrente &hashMap;
-};
-
-void* codigoThread(void* punteroAParametros) {
-    
-    parametrosThread parametros = *((parametrosThread*) punteroAParametros);
-
-    while(parametros.ultimoFileLeido->fetch_add(1) < parametros.filePaths.size()){
-        cargarArchivo(parametros.hashMap,parametros.filePaths[(*parametros.ultimoFileLeido).load()]);
+void* codigoThread(std::atomic<int> *ultimoFileLeido, std::vector<std::string> filePaths, HashMapConcurrente *hashMap) {
+    int index = (*ultimoFileLeido).fetch_add(1);
+    while(index < filePaths.size()){
+        cargarArchivo(*hashMap, filePaths[index]);
+        index = (*ultimoFileLeido).fetch_add(1);
     }
 }
 
@@ -57,18 +50,13 @@ void cargarMultiplesArchivos(
     std::vector<std::string> filePaths
 ) {
     std::atomic<int> ultimoFileLeido(0);
-
-    parametrosThread parametros {
-        .ultimoFileLeido = &ultimoFileLeido,
-        .filePaths = filePaths,
-        .hashMap = hashMap
-    };
-    pthread_t threadIds[cantThreads];
+    std::thread threads[cantThreads];
     for(unsigned int i = 0; i<cantThreads; i++) {
-        pthread_create(&(threadIds[i]), NULL, codigoThread, &parametros);
+        printf("Lanzo el thread: %d\n", i);
+        threads[i] = std::thread(&codigoThread, &ultimoFileLeido, filePaths, &hashMap);
     }
     for(unsigned int i = 0; i<cantThreads; i++) {
-        pthread_join(threadIds[i], NULL);
+       threads[i].join();
     }
 }
 
