@@ -4,8 +4,11 @@
 #include <thread>
 #include <iostream>
 #include <fstream>
+#include <time.h>
+#include <errno.h>
 
 #include "HashMapConcurrente.hpp"
+#define BILLION  1000000000L;
 
 HashMapConcurrente::HashMapConcurrente() {
     for (unsigned int i = 0; i < HashMapConcurrente::cantLetras; i++) {
@@ -93,7 +96,7 @@ hashMapPair HashMapConcurrente::maximo() {
 }
 
 hashMapPair HashMapConcurrente::maximoParalelo(unsigned int cant_threads) {
-    //Variables comparti
+    //Variables compartidas
     hashMapPair *max = new hashMapPair();
     std::atomic<int> indexLetraSinCalcular(0);
     std::thread threads[cant_threads];

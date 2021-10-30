@@ -52,7 +52,6 @@ void cargarMultiplesArchivos(
     std::atomic<int> ultimoFileLeido(0);
     std::thread threads[cantThreads];
     for(unsigned int i = 0; i<cantThreads; i++) {
-        printf("Lanzo el thread: %d\n", i);
         threads[i] = std::thread(&codigoThread, &ultimoFileLeido, filePaths, &hashMap);
     }
     for(unsigned int i = 0; i<cantThreads; i++) {

@@ -162,14 +162,12 @@ LT_BEGIN_TEST(TestsEjercicio3, MaximoEsCorrecto)
 LT_END_TEST(MaximoEsCorrecto)
 
 LT_BEGIN_TEST(TestsEjercicio3, MaximoParaleloEsCorrectoUnThread)
-    printf("No incremente");
     hM.incrementar("tiranosaurio");
     hM.incrementar("tiranosaurio");
     hM.incrementar("tiranosaurio");
     hM.incrementar("tiranosaurio");
     hM.incrementar("estegosaurio");
     hM.incrementar("estegosaurio");
-    printf("Incremente");
     hashMapPair actual = hM.maximoParalelo(1);
     LT_CHECK_EQ(actual.first, "tiranosaurio");
     LT_CHECK_EQ(actual.second, 4);
