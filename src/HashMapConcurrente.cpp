@@ -81,6 +81,7 @@ void HashMapConcurrente::prenderDisponibilidad(){
 hashMapPair HashMapConcurrente::maximo() {
     hashMapPair *max = new hashMapPair();
     max->second = 0;
+    // No es ABSOLUTAMENTE consistente. Nos imaginabamos un mutex para tomar los mutex :shrug:
     apagarDisponibilidad();
     for (unsigned int index = 0; index < HashMapConcurrente::cantLetras; index++) {
         for (auto &p : *tabla[index]) {
@@ -90,7 +91,6 @@ hashMapPair HashMapConcurrente::maximo() {
             }
         }
     }
-    // No es ABSOLUTAMENTE consistente. Nos imaginabamos un thread que espere y luego disponibilice. Pero suena como mucho.
     prenderDisponibilidad();
     return *max;
 }
